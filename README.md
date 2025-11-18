@@ -2,7 +2,7 @@ Getting Started
 - Prerequisites: Node.js 18+, npm, MongoDB (local or Atlas), Redis.
 - Install deps:
 	```powershell
-	cd "telemetry-ingestor"
+	cd telemetry-ingestor
 	npm install
 	```
 - Configure environment: copy `.env.example` to `.env` and set values:
@@ -57,25 +57,6 @@ Alerts
 	```
 - Dedup: per device + reason for 60 seconds via Redis.
 - Timeout: webhook POST has a 3s timeout.
-
-Quick Verification (PowerShell)
-```powershell
-# 0) Health
-Invoke-RestMethod http://localhost:3000/api/v1/health
-
-# 1) Ingest (requires token if INGEST_TOKEN is set)
-$h = @{ Authorization = 'Bearer secret123' }
-$body = @{ deviceId='dev-002'; siteId='site-A'; ts='2025-09-01T10:00:30.000Z'; metrics=@{ temperature=51.2; humidity=55 } } | ConvertTo-Json
-Invoke-RestMethod -Method Post -Uri http://localhost:3000/api/v1/telemetry -Headers $h -ContentType 'application/json' -Body $body
-
-# 2) Latest
-Invoke-RestMethod http://localhost:3000/api/v1/devices/dev-002/latest
-
-# 3) Summary
-$from = '2025-09-01T00:00:00.000Z'
-$to   = '2025-09-02T00:00:00.000Z'
-Invoke-RestMethod "http://localhost:3000/api/v1/sites/site-A/summary?from=$from&to=$to"
-```
 
 Running Tests
 - Unit tests: `npm run test`
